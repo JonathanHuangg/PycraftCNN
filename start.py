@@ -64,6 +64,7 @@ class MinecraftClientApp(tk.Tk):
             messagebox.showerror("Error", "Server is required")
             return
 
+        # make sure there is a space localhost: #
         match = re.match(r"((?P<host>[^\[\]:]+)|\[(?P<addr>[^\[\]]+)\])"
                         r"(:(?P<port>\d+))?$", server)
         
@@ -102,18 +103,22 @@ class MinecraftClientApp(tk.Tk):
     def setup_connection(self, connection):
         self.connection = connection
 
+        # packet listener 1: used for connecting to the game
         def handle_join_game(join_game_packet):
             self.after(0, lambda: self.log("Connected to the game"))
             self.after(0, lambda: self.disconnect_button.config(state=tk.NORMAL))
 
         connection.register_packet_listener(handle_join_game, clientbound.play.JoinGamePacket)
 
+        # packet listener 2: used for getting exactly what the player is looking at
+        # don't know exactly the output yet
         def handle_player_position_and_look(packet):
             x, y, z = packet.x, packet.y, packet.z
             self.after(0, lambda: self.log(f"Current Position: X={x}, Y={y}, Z={z}"))
         
         connection.register_packet_listener(handle_player_position_and_look, PlayerPositionAndLookPacket)
 
+        # packet listener 3: used for logging
         def print_chat(chat_packet):
             message = f"Message ({chat_packet.field_string('position')}): {chat_packet.json_data}"
 

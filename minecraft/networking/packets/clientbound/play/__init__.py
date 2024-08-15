@@ -79,7 +79,7 @@ def get_packets(context):
 
     return packets
 
-
+# below are just functions to return the packet_id
 class KeepAlivePacket(AbstractKeepAlivePacket):
     @staticmethod
     def get_id(context):
