@@ -49,7 +49,7 @@ class Hashing(unittest.TestCase):
         for input_value, result in self.test_data.items():
             sha1_hash = hashlib.sha1()
             sha1_hash.update(input_value.encode('utf-8'))
-            self.assertEquals(minecraft_sha1_hash_digest(sha1_hash), result)
+            self.assertEqual(minecraft_sha1_hash_digest(sha1_hash), result)
 
 
 class Encryption(unittest.TestCase):
@@ -61,13 +61,13 @@ class Encryption(unittest.TestCase):
         decrypted_token = private_key.decrypt(encrypted_token, PKCS1v15())
         decrypted_secret = private_key.decrypt(encrypted_secret, PKCS1v15())
 
-        self.assertEquals(token, decrypted_token)
-        self.assertEquals(secret, decrypted_secret)
+        self.assertEqual(token, decrypted_token)
+        self.assertEqual(secret, decrypted_secret)
 
     def test_generate_hash(self):
         verification_hash = generate_verification_hash(
             u"", "secret".encode('utf-8'),  public_key)
-        self.assertEquals("1f142e737a84a974a5f2a22f6174a78d80fd97f5",
+        self.assertEqual("1f142e737a84a974a5f2a22f6174a78d80fd97f5",
                           verification_hash)
 
     def test_file_object_wrapper(self):

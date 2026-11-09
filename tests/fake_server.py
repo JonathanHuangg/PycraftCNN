@@ -155,10 +155,18 @@ class FakeClientHandler(object):
         # Called upon each packet received after handle_play_start() returns.
         if isinstance(packet, serverbound.play.ChatPacket):
             assert len(packet.message) <= packet.max_length
-            self.write_packet(clientbound.play.ChatMessagePacket(json.dumps({
-                'translate': 'chat.type.text',
-                'with': [self.username, packet.message],
-            })))
+            # Field values are keyword arguments: passing the JSON string
+            # positionally would set it as the packet's `context` and leave
+            # `json_data` unset, so writing the packet raised AttributeError.
+            # `position` 0 is a normal chat message; `sender` is required
+            # by the packet layout on protocol 718+ and must be a string —
+            # the UUID type re-parses it with uuid.UUID(value).
+            self.write_packet(clientbound.play.ChatMessagePacket(
+                json_data=json.dumps({
+                    'translate': 'chat.type.text',
+                    'with': [self.user_name, packet.message],
+                }),
+                position=0, sender="00000000-0000-0000-0000-000000000000"))
 
     def handle_status(self, request_packet):
         # Called in the first phase of the status state, to send the Response

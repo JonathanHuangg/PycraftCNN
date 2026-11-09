@@ -141,7 +141,7 @@ class AllowedVersionsTest(fake_server._FakeServerTest):
 
 class LoginDisconnectTest(fake_server._FakeServerTest):
     def test_login_disconnect(self):
-        with self.assertRaisesRegexp(LoginDisconnect, r'You are banned'):
+        with self.assertRaisesRegex(LoginDisconnect, r'You are banned'):
             self._test_connect()
 
     class client_handler_type(fake_server.FakeClientHandler):
@@ -151,7 +151,7 @@ class LoginDisconnectTest(fake_server._FakeServerTest):
 
 class ConnectTwiceTest(fake_server._FakeServerTest):
     def test_connect(self):
-        with self.assertRaisesRegexp(InvalidState, 'existing connection'):
+        with self.assertRaisesRegex(InvalidState, 'existing connection'):
             self._test_connect()
 
     class client_handler_type(fake_server.FakeClientHandler):
@@ -413,11 +413,11 @@ class VersionNegotiationEdgeCases(fake_server._FakeServerTest):
         self._test_client_protocol(version=object())
 
     def _test_client_protocol(self, version):
-        with self.assertRaisesRegexp(ValueError, 'Unsupported version'):
+        with self.assertRaisesRegex(ValueError, 'Unsupported version'):
             self._test_connect(client_versions={version})
 
     def test_server_protocol_unsupported(self, client_versions=None):
-        with self.assertRaisesRegexp(VersionMismatch, 'not supported'):
+        with self.assertRaisesRegex(VersionMismatch, 'not supported'):
             self._test_connect(client_versions=client_versions,
                                server_version=self.fake_version)
 
@@ -428,7 +428,7 @@ class VersionNegotiationEdgeCases(fake_server._FakeServerTest):
         if client_versions is None:
             client_versions = set(SUPPORTED_PROTOCOL_VERSIONS) \
                               - {self.latest_version}
-        with self.assertRaisesRegexp(VersionMismatch, 'not allowed'):
+        with self.assertRaisesRegex(VersionMismatch, 'not allowed'):
             self._test_connect(client_versions={self.earliest_version},
                                server_version=self.latest_version)
 
@@ -458,7 +458,7 @@ class VersionNegotiationEdgeCases(fake_server._FakeServerTest):
                            connection_type=make_connection)
 
     def test_default_protocol_version_empty(self):
-        with self.assertRaisesRegexp(IOError, 'Invalid server status'):
+        with self.assertRaisesRegex(IOError, 'Invalid server status'):
             self.test_default_protocol_version(status_response='{}')
 
     def test_default_protocol_version_eof(self):
